@@ -1,5 +1,7 @@
 # RickOwens00 Driver
 
+## discord: m2n5m35n63b5mbv56m34bm73v4bn3v5v
+
 ## Overview
 
 RickOwens00 is a kernel driver that works for UM anticheats and EOS anticheat.
