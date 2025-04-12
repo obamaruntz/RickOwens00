@@ -20,7 +20,7 @@ RickOwens00 is a kernel driver that works for UM anticheats and EOS anticheat.
 
 ---
 
-##Functionality
+## Functionality
 
 Physical Memory Access
 - Translates virtual to physical address using CR3 of target process.
