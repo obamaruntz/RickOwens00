@@ -192,17 +192,17 @@ namespace utility_functions {
 		driver_functions::read_physical(PVOID((_pdp & PMASK) + 8 * pd), &pde, sizeof(pde), &buffer);
 		if (~pde & 1) return 0;
 
-		if (pde & 0x80) // 处理 4KB 页面
+		if (pde & 0x80) // 处理 1GB 页面
 			return (pde & (~0ull << 42 >> 12)) + (virtual_address & ~(~0ull << 30));
 
 		UINT64 _pte = 0;
 		driver_functions::read_physical(PVOID((pde & PMASK) + 8 * pt), &_pte, sizeof(_pte), &buffer);
 		if (~_pte & 1) return 0;
 
-		if (_pte & 0x80) // 通过 PTE 处理 4KB 页面
+		if (_pte & 0x80) // 通过 PTE 处理 2MB 页面
 			return (_pte & PMASK) + (virtual_address & ~(~0ull << 21));
 
-		// 通过 PTE 查找最终翻译
+		// 正常 4KB 页面 — 读取最终页表条目
 		virtual_address = 0;
 		driver_functions::read_physical(PVOID((_pte & PMASK) + 8 * pte), &virtual_address, sizeof(virtual_address), &buffer);
 		virtual_address &= PMASK;
