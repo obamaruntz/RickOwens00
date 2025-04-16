@@ -1,7 +1,7 @@
 #include <Driver/Communication.h>
 
 Communication::Communication() {
-    DriverHandle = CreateFileA("\\\\.\\300_passion_aggressive_link", GENERIC_READ | GENERIC_WRITE,
+    DriverHandle = CreateFileA("\\\\.\\RickOwens00", GENERIC_READ | GENERIC_WRITE,
         FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
 
     if (DriverHandle == INVALID_HANDLE_VALUE) {
