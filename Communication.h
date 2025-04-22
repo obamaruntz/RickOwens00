@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <string>
 
-#include <Framework.h>
+#include <framework.h>
 
 #define PRW_CODE CTL_CODE(FILE_DEVICE_UNKNOWN, 0x2ec33, METHOD_BUFFERED, FILE_SPECIAL_ACCESS)
 #define VRW_ATTACH_CODE CTL_CODE(FILE_DEVICE_UNKNOWN, 0x2ec34, METHOD_BUFFERED, FILE_SPECIAL_ACCESS)
@@ -13,123 +13,121 @@
 #define SECURITY_CODE 0x94c9e4bc3
 
 struct _PRW {
-	u64 SecurityCode;
+	u64 security_code;
 
-	i32 ProcessID;
-	void* Address;
-	void* Buffer;
+	i32 process_id;
+	void* address;
+	void* buffer;
 
-	u64 Size;
-	u64 ReturnSize;
+	u64 size;
+	u64 return_size;
 
 	bool Type;
 };
 
 struct _VRW {
-	u64 SecurityCode;
+	u64 security_code;
 
-	HANDLE ProcessHandle;
-	void* Address;
-	void* Buffer;
+	HANDLE process_handle;
+	void* address;
+	void* buffer;
 
-	u64 Size;
-	u64 ReturnSize;
+	u64 size;
+	u64 return_size;
 
 	bool Type;
 };
 
 struct _BA {
-	u64 SecurityCode;
+	u64 security_code;
 
-	i32 ProcessID;
-	u64* Address;
+	i32 process_id;
+	u64* address;
 };
 
-class Communication {
+class communication {
 public:
-	Communication();
-	~Communication();
+	communication();
+	~communication();
 
-	bool IsConnected();
+	bool is_connected();
 
-	bool VAttach(i32 ProcessID);
+	bool v_attach(i32 process_id);
 
-	i32 FindProcess(const i8* ProcessName); // UM
-	u64 FindImage();
-
-	template <typename T>
-	T VRead(u64 Address);
-	template <typename T>
-	void VWrite(u64 Address, T& Value);
+	i32 find_process(const i8* ProcessName); // UM
+	u64 find_image();
 
 	template <typename T>
-	T PRead(u64 Address);
+	T v_read(u64 address);
 	template <typename T>
-	void PWrite(u64 Address, T& Value);
+	void v_write(u64 address, T& Value);
 
-	std::string ReadStr(u64 Address);
+	template <typename T>
+	T read(u64 address);
+	template <typename T>
+	void read(u64 address, T& Value);
 
-	u64 ImageAddress = 0;
-	i32 ProcessID = 0;
+	std::string readstr(u64 address);
+
+	u64 image_address = 0;
+	i32 process_id = 0;
 private:
-	HANDLE DriverHandle = INVALID_HANDLE_VALUE;
+	HANDLE driver_handle = INVALID_HANDLE_VALUE;
 };
 
-// C++ Sucks
-
 template <typename T>
-T Communication::VRead(u64 Address) {
-	T Temp = {};
+T communication::v_read(u64 address) {
+	T temp = {};
 
-	_VRW Arguments;
-	Arguments.SecurityCode = SECURITY_CODE;
-	Arguments.Address = reinterpret_cast<void*>(Address);
-	Arguments.Buffer = &Temp;
-	Arguments.Size = sizeof(T);
-	Arguments.Type = false;
+	_VRW arguments;
+	arguments.security_code = SECURITY_CODE;
+	arguments.address = reinterpret_cast<void*>(address);
+	arguments.buffer = &temp;
+	arguments.size = sizeof(T);
+	arguments.Type = false;
 
-	DeviceIoControl(DriverHandle, VRW_CODE, &Arguments, sizeof(Arguments), &Arguments, sizeof(Arguments), nullptr, nullptr);
-	return Temp;
+	DeviceIoControl(driver_handle, VRW_CODE, &arguments, sizeof(arguments), &arguments, sizeof(arguments), nullptr, nullptr);
+	return temp;
 }
 
 template <typename T>
-void Communication::VWrite(u64 Address, T& Value) {
-	_VRW Arguments;
-	Arguments.SecurityCode = SECURITY_CODE;
-	Arguments.Address = reinterpret_cast<void*>(Address);
-	Arguments.Buffer = (void*)&Value;
-	Arguments.Size = sizeof(T);
-	Arguments.Type = true;
+void communication::v_write(u64 address, T& value) {
+	_VRW arguments;
+	arguments.security_code = SECURITY_CODE;
+	arguments.address = reinterpret_cast<void*>(address);
+	arguments.buffer = (void*)&value;
+	arguments.size = sizeof(T);
+	arguments.Type = true;
 
-	DeviceIoControl(DriverHandle, VRW_CODE, &Arguments, sizeof(Arguments), &Arguments, sizeof(Arguments), nullptr, nullptr);
+	DeviceIoControl(driver_handle, VRW_CODE, &arguments, sizeof(arguments), &arguments, sizeof(arguments), nullptr, nullptr);
 }
 
 template <typename T>
-T Communication::PRead(u64 Address) {
-	T Temp = {};
+T communication::read(u64 address) {
+	T temp = {};
 
-	_PRW Arguments = {};
-	Arguments.SecurityCode = SECURITY_CODE;
-	Arguments.Address = reinterpret_cast<void*>(Address);
-	Arguments.Buffer = &Temp;
-	Arguments.Size = sizeof(T);
-	Arguments.ProcessID = ProcessID;
-	Arguments.Type = false;
+	_PRW arguments = {};
+	arguments.security_code = SECURITY_CODE;
+	arguments.address = reinterpret_cast<void*>(address);
+	arguments.buffer = &temp;
+	arguments.size = sizeof(T);
+	arguments.process_id = process_id;
+	arguments.Type = false;
 
-	DeviceIoControl(DriverHandle, PRW_CODE, &Arguments, sizeof(Arguments), nullptr, NULL, NULL, NULL);
+	DeviceIoControl(driver_handle, PRW_CODE, &arguments, sizeof(arguments), nullptr, NULL, NULL, NULL);
 
-	return Temp;
+	return temp;
 }
 
 template <typename T>
-void Communication::PWrite(u64 Address, T& Value) {
-	_PRW Arguments = {};
-	Arguments.SecurityCode = SECURITY_CODE;
-	Arguments.Address = reinterpret_cast<void*>(Address);
-	Arguments.Buffer = (void*)&Value;
-	Arguments.Size = sizeof(T);
-	Arguments.ProcessID = ProcessID;
-	Arguments.Type = true;
+void communication::read(u64 address, T& value) {
+	_PRW arguments = {};
+	arguments.security_code = SECURITY_CODE;
+	arguments.address = reinterpret_cast<void*>(address);
+	arguments.buffer = (void*)&value;
+	arguments.size = sizeof(T);
+	arguments.process_id = process_id;
+	arguments.Type = true;
 
-	DeviceIoControl(DriverHandle, PRW_CODE, &Arguments, sizeof(Arguments), nullptr, NULL, NULL, NULL);
+	DeviceIoControl(driver_handle, PRW_CODE, &arguments, sizeof(arguments), nullptr, NULL, NULL, NULL);
 }
