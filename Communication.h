@@ -65,7 +65,7 @@ public:
 	template <typename T>
 	T read(u64 address);
 	template <typename T>
-	void read(u64 address, T& Value);
+	void write(u64 address, T& Value);
 
 	std::string readstr(u64 address);
 
@@ -120,7 +120,7 @@ T communication::read(u64 address) {
 }
 
 template <typename T>
-void communication::read(u64 address, T& value) {
+void communication::write(u64 address, T& value) {
 	_PRW arguments = {};
 	arguments.security_code = SECURITY_CODE;
 	arguments.address = reinterpret_cast<void*>(address);
