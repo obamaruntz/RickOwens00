@@ -21,22 +21,3 @@ RickOwens00 is a kernel driver that works for UM anticheats and EOS anticheat.
 | `SECURITY_CODE`   | 0x94c9e4bc3 | Required for all valid requests          |
 
 ---
-
-## Functionality
-
-Physical Memory Access
-- Translates virtual to physical address using CR3 of target process.
-- Reads or writes physical memory across page boundaries safely.
-
-Virtual Memory Access
-- Uses MmCopyVirtualMemory for safe memory transfer.
-- Requires VRW_ATTACH_CODE to set a valid target context.
-
-Process Base Address Retrieval
-- Returns the image base of a specified process by PID.
-
-Guarded Region Lookup
-- Scans big pool allocations for a region tagged TnoC with size 0x200000.
-
-Process Unlinking
-- Unlinks a process from ActiveProcessLinks to hide it from typical enumeration.
