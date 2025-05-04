@@ -27,34 +27,25 @@ bool communication::v_attach(i32 process_id) {
 }
 
 std::string communication::readstr(u64 address) {
-    u16 length = read<u16>(address + 0x10);
-    if (length == 0 || length > 255) {
-        return "Unknown";
+    i32 StrLength = read<i32>(address + 0x18);
+
+    if (StrLength >= 16) {
+        address = read<u64>(address);
     }
 
-    if (length <= 15) {
-        char buffer[16] = {};
-        _VRW arguments;
-        arguments.address = reinterpret_cast<void*>(address);
-        arguments.buffer = buffer;
-        arguments.size = sizeof(buffer) - 1;
-        arguments.Type = false;
+    std::vector<i8> Buffer(256);
 
-        DeviceIoControl(driver_handle, VRW_CODE, &arguments, sizeof(arguments), &arguments, sizeof(arguments), nullptr, nullptr);
-        return std::string(buffer, length);
-    }
-    else {
-        u64 str_ptr = read<u64>(address);
-        char buffer[256] = {};
-        _VRW arguments;
-        arguments.address = reinterpret_cast<void*>(str_ptr);
-        arguments.buffer = buffer;
-        arguments.size = length;
-        arguments.Type = false;
+    _PRW arguments = {};
+    arguments.security_code = SECURITY_CODE;
+    arguments.address = reinterpret_cast<void*>(address);
+    arguments.buffer = Buffer.data();
+    arguments.size = Buffer.size();
+    arguments.process_id = process_id;
+    arguments.Type = false;
 
-        DeviceIoControl(driver_handle, VRW_CODE, &arguments, sizeof(arguments), &arguments, sizeof(arguments), nullptr, nullptr);
-        return std::string(buffer, length);
-    }
+    DeviceIoControl(driver_handle, PRW_CODE, &arguments, sizeof(arguments), nullptr, NULL, NULL, NULL);
+
+    return std::string(Buffer.data());
 }
 
 i32 communication::find_process(const i8* process_name) {
