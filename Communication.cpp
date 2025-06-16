@@ -17,7 +17,7 @@ bool Communication::isConnected() {
 
 bool Communication::virtualAttach(i32 processId) {
     _VRW arguments;
-    arguments.process_handle = reinterpret_cast<HANDLE>(processId);
+    arguments.processHandle = reinterpret_cast<HANDLE>(processId);
 
     return DeviceIoControl(driverHandle, VRW_ATTACH_CODE, &arguments, sizeof(arguments), &arguments, sizeof(arguments), nullptr, nullptr);
 }
@@ -32,12 +32,12 @@ std::string Communication::readString(u64 address) {
     std::vector<i8> buffer(256);
 
     _PRW arguments = {};
-    arguments.security_code = SECURITY_CODE;
+    arguments.securityCode = SECURITY_CODE;
     arguments.address = reinterpret_cast<void*>(address);
     arguments.buffer = buffer.data();
     arguments.size = buffer.size();
     arguments.processId = processId;
-    arguments.Type = false;
+    arguments.type = false;
 
     DeviceIoControl(driverHandle, PRW_CODE, &arguments, sizeof(arguments), nullptr, NULL, NULL, NULL);
 
@@ -71,7 +71,7 @@ u64 Communication::findImage() {
     u64 localImageAddress = 0;
 
     _BA arguments = {};
-    arguments.security_code = SECURITY_CODE;
+    arguments.securityCode = SECURITY_CODE;
     arguments.processId = processId;
     arguments.address = &localImageAddress;
 
@@ -91,5 +91,5 @@ i32 Communication::getProcessId() {
 }
 
 u64 Communication::getImageAddress() {
-    return getImageAddress;
+    return imageAddress;
 }
