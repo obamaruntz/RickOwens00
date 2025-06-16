@@ -35,7 +35,7 @@ struct _PRW {
 	void* buffer;
 
 	u64 size;
-	u64 return_size;
+	u64 returnSize;
 
 	bool type;
 };
@@ -48,7 +48,7 @@ struct _VRW {
 	void* buffer;
 
 	u64 size;
-	u64 return_size;
+	u64 returnSize;
 
 	bool type;
 };
@@ -59,4 +59,3 @@ struct _BA {
 	i32 processId;
 	u64* address;
 };
-
