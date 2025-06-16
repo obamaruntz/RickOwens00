@@ -45,7 +45,7 @@ T Communication::virtualRead(u64 address) {
 	T temp = {};
 
 	_VRW arguments;
-	arguments.security_code = SECURITY_CODE;
+	arguments.securityCode = SECURITY_CODE;
 	arguments.address = reinterpret_cast<void*>(address);
 	arguments.buffer = &temp;
 	arguments.size = sizeof(T);
@@ -58,7 +58,7 @@ T Communication::virtualRead(u64 address) {
 template <typename T>
 void Communication::virtualWrite(u64 address, T& value) {
 	_VRW arguments;
-	arguments.security_code = SECURITY_CODE;
+	arguments.securityCode = SECURITY_CODE;
 	arguments.address = reinterpret_cast<void*>(address);
 	arguments.buffer = (void*)&value;
 	arguments.size = sizeof(T);
@@ -72,7 +72,7 @@ T Communication::read(u64 address) {
 	T temp = {};
 
 	_PRW arguments = {};
-	arguments.security_code = SECURITY_CODE;
+	arguments.securityCode = SECURITY_CODE;
 	arguments.address = reinterpret_cast<void*>(address);
 	arguments.buffer = &temp;
 	arguments.size = sizeof(T);
@@ -87,7 +87,7 @@ T Communication::read(u64 address) {
 template <typename T>
 void Communication::write(u64 address, T& value) {
 	_PRW arguments = {};
-	arguments.security_code = SECURITY_CODE;
+	arguments.securityCode = SECURITY_CODE;
 	arguments.address = reinterpret_cast<void*>(address);
 	arguments.buffer = (void*)&value;
 	arguments.size = sizeof(T);
