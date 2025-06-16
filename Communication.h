@@ -55,7 +55,7 @@ T Communication::virtualRead(u64 address) {
 	arguments.address = reinterpret_cast<void*>(address);
 	arguments.buffer = &temp;
 	arguments.size = sizeof(T);
-	arguments.Type = false;
+	arguments.type = false;
 
 	DeviceIoControl(driverHandle, VRW_CODE, &arguments, sizeof(arguments), &arguments, sizeof(arguments), nullptr, nullptr);
 	return temp;
@@ -68,7 +68,7 @@ void Communication::virtualWrite(u64 address, T& value) {
 	arguments.address = reinterpret_cast<void*>(address);
 	arguments.buffer = (void*)&value;
 	arguments.size = sizeof(T);
-	arguments.Type = true;
+	arguments.type = true;
 
 	DeviceIoControl(driverHandle, VRW_CODE, &arguments, sizeof(arguments), &arguments, sizeof(arguments), nullptr, nullptr);
 }
@@ -83,7 +83,7 @@ T Communication::read(u64 address) {
 	arguments.buffer = &temp;
 	arguments.size = sizeof(T);
 	arguments.processId = processId;
-	arguments.Type = false;
+	arguments.type = false;
 
 	DeviceIoControl(driverHandle, PRW_CODE, &arguments, sizeof(arguments), nullptr, NULL, NULL, NULL);
 
@@ -98,7 +98,7 @@ void Communication::write(u64 address, T& value) {
 	arguments.buffer = (void*)&value;
 	arguments.size = sizeof(T);
 	arguments.processId = processId;
-	arguments.Type = true;
+	arguments.type = true;
 
 	DeviceIoControl(driverHandle, PRW_CODE, &arguments, sizeof(arguments), nullptr, NULL, NULL, NULL);
 }
