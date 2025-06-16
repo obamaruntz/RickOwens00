@@ -68,18 +68,14 @@ i32 Communication::findProcess(const i8* processName) {
 }
 
 u64 Communication::findImage() {
-    u64 localImageAddress = 0;
-
     _BA arguments = {};
     arguments.securityCode = SECURITY_CODE;
     arguments.processId = processId;
-    arguments.address = &localImageAddress;
+    arguments.address = &imageAddress;
 
     DeviceIoControl(driverHandle, BA_CODE, &arguments, sizeof(arguments), nullptr, NULL, NULL, NULL);
 
-    localImageAddress = localImageAddress;
-
-    return localImageAddress;
+    return imageAddress;
 }
 
 HANDLE Communication::getDriverHandle() {
