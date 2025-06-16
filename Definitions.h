@@ -28,7 +28,7 @@ typedef const char* cstr;
 typedef std::string str;
 
 struct _PRW {
-	u64 security_code;
+	u64 securityCode;
 
 	i32 processId;
 	void* address;
@@ -37,24 +37,24 @@ struct _PRW {
 	u64 size;
 	u64 return_size;
 
-	bool Type;
+	bool type;
 };
 
 struct _VRW {
-	u64 security_code;
+	u64 securityCode;
 
-	HANDLE process_handle;
+	HANDLE processHandle;
 	void* address;
 	void* buffer;
 
 	u64 size;
 	u64 return_size;
 
-	bool Type;
+	bool type;
 };
 
 struct _BA {
-	u64 security_code;
+	u64 securityCode;
 
 	i32 processId;
 	u64* address;
