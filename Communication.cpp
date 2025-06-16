@@ -3,10 +3,6 @@
 communication::communication() {
     driver_handle = CreateFileA("\\\\.\\RickOwens00", GENERIC_READ | GENERIC_WRITE,
         FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL);
-
-    if (driver_handle == INVALID_HANDLE_VALUE) {
-        driver_handle = nullptr;
-    }
 }
 
 communication::~communication() {
