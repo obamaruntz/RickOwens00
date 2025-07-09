@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "winver.h"
 
@@ -343,6 +343,13 @@ namespace major_functions {
 	// 主 I/O 处理程序用于处理我们的虚拟/物理/基地址/鼠标请求
 	NTSTATUS io_controller(PDEVICE_OBJECT device_object, PIRP irp) {
 		UNREFERENCED_PARAMETER(device_object);
+
+		if (KeGetCurrentIrql() != PASSIVE_LEVEL) { // crash fix
+			irp->IoStatus.Status = STATUS_UNSUCCESSFUL;
+			irp->IoStatus.Information = 0;
+			IoCompleteRequest(irp, IO_NO_INCREMENT);
+			return STATUS_UNSUCCESSFUL;
+		}
 
 		NTSTATUS status = STATUS_UNSUCCESSFUL;
 		ULONG bytes = {};
